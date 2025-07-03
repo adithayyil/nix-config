@@ -18,7 +18,7 @@
   outputs = inputs@{ self, nixpkgs, nix-darwin, home-manager, mac-app-util, ... }:
   let
     inherit (self) outputs;
-    stateVersion = "24.11";
+    stateVersion = "23.11";
     libx = import ./lib { inherit inputs outputs stateVersion; };
   in
   {
