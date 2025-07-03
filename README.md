@@ -1,12 +1,12 @@
-# 🍎 adi's `nix-darwin` flake
+# adi's `nix-darwin` flake
 
 > *Clean, modular macOS system configuration using nix-darwin + home-manager*
 
-## 🏗️ Flake Architecture
+## Flake Architecture
 
 This configuration follows a **modular, composable design** that separates concerns and maximizes reusability.
 
-### 📦 Flake Structure
+### Flake Structure
 
 ```nix
 inputs = {
@@ -25,32 +25,32 @@ outputs = { ... }: {
 };
 ```
 
-### 🧩 Module System
+### Module System
 
 ```
-├── 🛠️  lib/helpers.nix       → mkDarwin() system builder
-├── 📦 modules/               → Composable components
-│   ├── darwin/              → 🖥️  System-level (fonts, homebrew, nix, system)
-│   └── home-manager/        → 🏠 User-level (packages, programs, dotfiles)
-├── 💻 hosts/                → Machine-specific overrides
-└── ⚙️  home/                → Dotfiles and user configurations
+├── lib/helpers.nix       → mkDarwin() system builder
+├── modules/               → Composable components
+│   ├── darwin/              → System-level (fonts, homebrew, nix, system)
+│   └── home-manager/        → User-level (packages, programs, dotfiles)
+├── hosts/                → Machine-specific overrides
+└── home/                → Dotfiles and user configurations
 ```
 
-## 🔧 Design Principles
+## Design Principles
 
-### **🧩 Modular Composition**
+### **Modular Composition**
 Each module handles one concern:
 - `modules/darwin/nix.nix` → Nix daemon configuration
 - `modules/darwin/system.nix` → macOS system defaults
 - `modules/home-manager/packages.nix` → User package definitions
 
-### **🔄 Layered Configuration**
+### **Layered Configuration**
 Configuration flows in layers with clear override hierarchy:
 ```
 Common Base → Darwin Modules → Host Specific → User Config
 ```
 
-### **⚡ Single Entry Point**
+### **Single Entry Point**
 Everything flows through `lib/helpers.nix::mkDarwin()`:
 ```nix
 mkDarwin = { hostname, username, system }: 
@@ -63,12 +63,12 @@ mkDarwin = { hostname, username, system }:
   };
 ```
 
-### **🎯 Inline vs External Modules**
+### **Inline vs External Modules**
 **Inline Configuration**: Core system settings embedded directly in `helpers.nix` to avoid Nix store path issues
 
 **External Modules**: Host-specific and user customizations in separate files for maintainability
 
-## 📁 Directory Design
+## Directory Design
 
 ### **`lib/` - Builder Functions**
 - `helpers.nix` → Core system builder with inline configuration
@@ -86,7 +86,7 @@ mkDarwin = { hostname, username, system }:
 - **users/adi.nix** → User-specific settings
 - **[app-dirs]/** → Application dotfiles and configs
 
-## ⚡ Quick Commands
+## Quick Commands
 
 ```bash
 # Core workflow
@@ -105,7 +105,7 @@ just fmt       # Format all .nix files
 just dev       # Enter development shell
 ```
 
-## 🔄 Configuration Flow
+## Configuration Flow
 
 ```
 1. flake.nix → Entry point, defines inputs/outputs
@@ -115,7 +115,7 @@ just dev       # Enter development shell
 5. Home Manager → User environment with dotfile management
 ```
 
-## 🎯 Customization Points
+## Customization Points
 
 | **What** | **Where** | **Why** |
 |----------|-----------|---------|
@@ -124,7 +124,7 @@ just dev       # Enter development shell
 | Dotfiles | `home/[app]/` | Application configurations |
 | Core system | `lib/helpers.nix` | Fundamental system settings |
 
-## 🧪 Testing Strategy
+## Testing Strategy
 
 ```bash
 # Always test before applying
@@ -133,7 +133,7 @@ just check     # Validate flake structure
 just switch    # Apply if tests pass
 ```
 
-## 🔮 Extensibility
+## Extensibility
 
 This flake design supports:
 - **Multiple machines** → Add to `hosts/darwin/`

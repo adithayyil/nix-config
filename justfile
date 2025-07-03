@@ -1,10 +1,27 @@
-# 🍎 Adi's Nix Darwin - Task Runner
+# Adi's Nix Darwin - Task Runner
 
 # Show available commands
 default:
     @just --list
 
-# 🚀 Daily Commands
+# Daily Commands
+
+# Bootstrap system (first-time setup)
+bootstrap:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # Install Nix if not present
+    if ! command -v nix &> /dev/null; then
+        echo "Installing Nix..."
+        curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+        source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+    fi
+    # Install nix-darwin if not present
+    if ! command -v darwin-rebuild &> /dev/null; then
+        echo "Installing nix-darwin..."
+        nix run nix-darwin -- switch --flake /etc/nix-darwin
+    fi
+    echo "Bootstrap complete! Run 'just switch' to apply configuration."
 
 # Apply configuration changes
 switch:
@@ -22,7 +39,7 @@ check:
 update:
     nix flake update
 
-# 🧹 Maintenance
+# Maintenance
 
 # Clean old generations and optimize store
 cleanup:
@@ -49,14 +66,14 @@ backup:
     cp -r /etc/nix-darwin ~/nix-darwin-backup-$(date +%Y%m%d-%H%M%S)
     @echo "✅ Backup created: ~/nix-darwin-backup-$(date +%Y%m%d-%H%M%S)"
 
-# 📊 Information
+# Information
 
 # Show system info
 info:
-    @echo "🖥️  System: $(hostname) ($(uname -m))"
-    @echo "🍎 macOS: $(sw_vers -productVersion)"
-    @echo "❄️  Nix: $(nix --version | head -1)"
-    @echo "📦 Flake: $(nix flake metadata --json | jq -r .lastModified | xargs -I {} date -r {})"
+    @echo "System: $(hostname) ($(uname -m))"
+    @echo "macOS: $(sw_vers -productVersion)"
+    @echo "Nix: $(nix --version | head -1)"
+    @echo "Flake: $(nix flake metadata --json | jq -r .lastModified | xargs -I {} date -r {})"
 
 # Show flake metadata
 meta:
@@ -66,7 +83,7 @@ meta:
 doctor:
     nix-doctor
 
-# 🛠️ Development
+# Development
 
 # Enter development shell
 dev:
