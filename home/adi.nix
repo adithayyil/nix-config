@@ -2,9 +2,6 @@
 {
   home.stateVersion = "23.11";
 
-  # Enable mac-app-util for proper GUI app linking
-  programs.mac-app-util.enable = true;
-
   # Home packages
   home.packages = with pkgs; [
     # Fonts
