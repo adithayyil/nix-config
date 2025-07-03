@@ -140,14 +140,9 @@ in
             masApps = { };
           };
           
-          # System-level packages
+          # System-level packages (minimal - most packages should be in home-manager)
           environment.systemPackages = with unstablePkgs; [
-            curl
-            wget
-            git
-            kitty
-            iina
-            zathura
+            # Only essential system-wide tools here
           ];
         }
         
@@ -165,51 +160,11 @@ in
             users.${username} = {
               home.stateVersion = stateVersion;
               
-              # User packages
-              home.packages = with unstablePkgs; [
-                fd
-                ripgrep
-                dust
-                duf
-                btop
-                tree
-                jq
-                yq
-                unzip
-                p7zip
-                gh
+              # Import modular home-manager configuration
+              imports = [ 
+                ./../modules/home-manager 
+                inputs.mac-app-util.homeManagerModules.default
               ];
-              
-              # Program configurations
-              programs = {
-                git = {
-                  enable = true;
-                  userName = "Adi";
-                  userEmail = "your-email@example.com";
-                };
-                
-                fish.enable = true;
-                starship.enable = true;
-                helix.enable = true;
-              };
-              
-              # Dotfiles
-              home.file = {
-                ".config/fish".source = ./../home/fish;
-                ".config/helix".source = ./../home/helix;
-                ".config/kitty".source = ./../home/kitty;
-                ".config/zathura".source = ./../home/zathura;
-                ".config/aerospace".source = ./../home/aerospace;
-                ".config/scdl/scdl.cfg".source = ./../home/scdl/scdl.cfg;
-                ".ssh/config".source = ./../home/ssh/config;
-                ".hushlogin".text = "";
-              };
-              
-              # User-specific environment variables
-              home.sessionVariables = {
-                EDITOR = "hx";
-                BROWSER = "zen";
-              };
             };
           };
         }

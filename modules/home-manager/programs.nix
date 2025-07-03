@@ -5,7 +5,8 @@
     # Git configuration
     git = {
       enable = true;
-      # Add your git config here if needed
+      userName = "adithayyil";
+      userEmail = "adithayyil@icloud.com";
     };
     
     # Fish shell configuration

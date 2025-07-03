@@ -11,4 +11,10 @@
     ".ssh/config".source = ../../home/ssh/config;
     ".hushlogin".text = "";
   };
+
+  # User-specific environment variables
+  home.sessionVariables = {
+    EDITOR = "hx";
+    BROWSER = "zen";
+  };
 }
