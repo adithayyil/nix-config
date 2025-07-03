@@ -1,0 +1,38 @@
+Host *
+      PermitLocalCommand yes
+      LocalCommand clear
+
+
+Host hfcs
+      Hostname hfcs.csclub.uwaterloo.ca
+      Port 22
+      User athayyil
+      IdentityFile ~/.ssh/csc2024
+
+Host arsenic
+      Hostname ssh.mangoo.site
+      Port 22
+      User adi
+      IdentityFile ~/.ssh/arsenic
+      ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h
+
+Host arsenic.local
+      Hostname 10.0.0.63
+      Port 22
+      User adi
+      IdentityFile ~/.ssh/arsenic
+
+Host llm-worker
+      HostName 172.19.134.115
+      User debian
+      ProxyJump hfcs
+      IdentityFile ~/.ssh/csc-cloud
+
+Host linux.cs
+      hostname linux.student.cs.uwaterloo.ca
+      user athayyil
+
+host linux.math
+      Hostname linux.student.math.uwaterloo.ca 
+      User athayyil
+      IdentityFile ~/.ssh/linux.math

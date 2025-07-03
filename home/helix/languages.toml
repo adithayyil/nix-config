@@ -1,0 +1,17 @@
+[[language]]
+name = "typst"
+language-servers = ["tinymist"]
+auto-format = true
+formatter.command = "typstyle"
+
+[language-server.tinymist]
+command = "tinymist"
+# config.preview.background.enabled = true
+# config.preview.background.args = ["--data-plane-host=127.0.0.1:0", "--invert-colors=never", "--open"]
+config = { exportPdf = "onType" }
+
+
+[[language]]
+name = "markdown"
+formatter = { command = "dprint", args = ["fmt", "--stdin", "md"]}
+auto-format = true

@@ -1,5 +1,7 @@
 { ... }:
 {
+  system.primaryUser = "adi";
+
   # MacBook Air specific configurations
   
   # Custom dock configuration for this machine
@@ -15,9 +17,6 @@
   # Machine-specific homebrew casks
   homebrew.casks = [
     # Add any MacBook Air specific apps here
-    "battery-toolkit"  # Battery management for laptops
+    # "battery-toolkit"  # Battery management for laptops
   ];
-
-  # Laptop-specific power management
-  system.defaults.NSGlobalDomain.NSAppSleepDisabled = false;
 }

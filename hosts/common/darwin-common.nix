@@ -9,8 +9,8 @@ in
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
       warn-dirty = false;
-      auto-optimise-store = true;
     };
+    optimise.automatic = true;
     channel.enable = false;
     gc = {
       automatic = true;
@@ -87,37 +87,32 @@ in
     ];
     
     casks = [
-      # Browsers
-      "firefox"
-      "google-chrome"
+    #   # Browsers
+    #   "firefox"
+    #   "google-chrome"
       
-      # Development
-      "visual-studio-code"
-      "iterm2"
-      "docker"
+    #   # Development
+    #   "visual-studio-code"
+    #   "iterm2"
+    #   "docker"
       
-      # Productivity
-      "raycast"
-      "1password"
-      "notion"
+    #   # Productivity
+    #   "notion"
       
-      # Media
-      "vlc"
-      "spotify"
+    #   # Media
+    #   "vlc"
+    #   "spotify"
       
-      # Communication
-      "discord"
-      "slack"
+    #   # Communication
+    #   "discord"
       
-      # Utilities
-      "the-unarchiver"
-      "appcleaner"
-      "karabiner-elements"
+    #   # Utilities
+    #   "the-unarchiver"
+    #   "appcleaner"
     ];
     
     masApps = {
       "Xcode" = 497799835;
-      "TestFlight" = 899247664;
     };
   };
 }
