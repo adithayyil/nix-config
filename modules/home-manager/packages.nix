@@ -3,36 +3,40 @@
   # User packages - tools and applications for development and daily use
   home.packages = with unstablePkgs; [
     # Development tools
+    helix
     just
-    htop
+    # htop
     # fd
     # ripgrep
     # dust
     # duf
     # btop
-    # tree
+    tree
     # jq
     # yq
     # gh
-    
-    # Terminal enhancements
-    fish
-    
+
+
+    # Language Servers
+    nixd
+
     # File utilities
     zathura
     # unzip
     # p7zip
-    
+
     # Network tools
     # curl
     # wget
-    
+
     # Version control
     git
-    
+
     # GUI Applications (these will be linked to /Applications/Nix Apps)
-    iina
     kitty
-   
+    aerospace
+    iina
+
+    scdl
   ];
 }

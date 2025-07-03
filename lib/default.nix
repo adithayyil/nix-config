@@ -5,7 +5,7 @@ in
 {
   # Export all helper functions
   inherit (helpers) mkDarwin mkHome;
-  
+
   # System configurations
   systems = {
     aarch64-darwin = "aarch64-darwin";

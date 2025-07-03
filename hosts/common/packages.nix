@@ -4,7 +4,6 @@
   # User packages should go in home-manager configuration
   environment.systemPackages = with pkgs; [
     # Essential system tools
-    git
-    just
+    fish
   ];
 }

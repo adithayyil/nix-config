@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 {
   # MacBook Air specific configurations
-  
+
   # Custom dock configuration for this machine
   system.defaults.dock = {
     persistent-apps = [
@@ -18,12 +18,12 @@
     NSGlobalDomain = {
       # Faster animations for better battery life
       NSWindowResizeTime = 0.001;
-      
+
       # Faster key repeat for coding (override common config)
       InitialKeyRepeat = lib.mkForce 10;
       KeyRepeat = lib.mkForce 1;
     };
-    
+
     # Trackpad optimizations for MacBook Air
     trackpad = {
       Clicking = true;
@@ -42,8 +42,8 @@
   # MacBook Air specific environment variables
   environment.variables = {
     # Optimize for SSD
-    HOMEBREW_NO_AUTO_UPDATE = "1";  # Reduce SSD writes
-    
+    HOMEBREW_NO_AUTO_UPDATE = "1"; # Reduce SSD writes
+
     # Development optimizations for 8GB RAM
     NODE_OPTIONS = "--max-old-space-size=4096";
   };
