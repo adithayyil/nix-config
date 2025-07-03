@@ -29,11 +29,11 @@ outputs = { ... }: {
 
 ```
 ├── lib/helpers.nix       → mkDarwin() system builder
-├── modules/               → Composable components
-│   ├── darwin/              → System-level (fonts, homebrew, nix, system)
-│   └── home-manager/        → User-level (packages, programs, dotfiles)
+├── modules/              → Composable components
+│   ├── darwin/           → System-level (fonts, homebrew, nix, system)
+│   └── home-manager/     → User-level (packages, programs, dotfiles)
 ├── hosts/                → Machine-specific overrides
-└── home/                → Dotfiles and user configurations
+└── home/                 → Dotfiles and user configurations
 ```
 
 ## Design Principles
