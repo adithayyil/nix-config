@@ -1,179 +1,146 @@
-# Adi's Nix Darwin Configuration
+# 🍎 adi's `nix-darwin` flake
 
-This repository contains my personal nix-darwin system configuration, managing packages, dotfiles, and system settings in a declarative way.
+> *Clean, modular macOS system configuration using nix-darwin + home-manager*
 
-## 🚀 Quick Start
+## 🏗️ Flake Architecture
 
-### Prerequisites
-- macOS (tested on macOS Monterey+)
-- Admin access to install Nix
+This configuration follows a **modular, composable design** that separates concerns and maximizes reusability.
 
-### Installation
-
-1. **Clone or copy this configuration to `/etc/nix-darwin`**
-2. **Run the installation script:**
-   ```bash
-   sudo /etc/nix-darwin/install.sh
-   ```
-3. **Update your personal information in `home/adi.nix`** (email, name, etc.)
-
-### Daily Usage
-
-This configuration uses [just](https://just.systems/) for easy management:
-
-```bash
-# Rebuild and switch to new configuration
-just switch
-
-# Build without switching (useful for testing)
-just build
-
-# Update all flake inputs
-just update
-
-# Garbage collect old generations
-just gc
-
-# See all available commands
-just
-```
-
-## 📁 Repository Structure
-
-```
-/etc/nix-darwin/
-├── flake.nix                 # Main flake configuration
-├── justfile                  # Task runner for common operations
-├── install.sh               # Bootstrap script
-├── lib/                     # Helper functions
-│   ├── default.nix          # Library exports
-│   └── helpers.nix          # Darwin system builders
-├── hosts/                   # Host-specific configurations
-│   ├── common/              # Shared configurations
-│   │   ├── common-packages.nix
-│   │   └── darwin-common.nix
-│   └── darwin/              # macOS specific hosts
-│       └── Adis-MacBook-Air/
-│           └── default.nix
-├── home/                    # Home Manager configurations
-│   └── adi.nix             # Personal user configuration
-├── modules/                 # Custom NixOS/nix-darwin modules
-└── data/                   # Static configuration files
-```
-
-## 🛠 Key Features
-
-### Package Management
-- **Nix packages**: Managed declaratively in `common-packages.nix`
-- **Homebrew integration**: Casks and Mac App Store apps
-- **Development tools**: Modern CLI replacements (bat, eza, ripgrep, etc.)
-
-### Dotfiles Management
-- **Shell configuration**: Fish shell with modern plugins
-- **Git configuration**: Sensible defaults with diff-so-fancy
-- **Terminal tools**: Tmux, Neovim, Starship prompt
-- **Development environment**: Direnv for project-specific environments
-
-### System Configuration
-- **macOS defaults**: Dock, Finder, trackpad settings
-- **Fonts**: Nerd Fonts for better terminal experience
-- **Services**: Automated garbage collection, system optimization
-
-## 🔧 Customization
-
-### Adding New Packages
-
-**System packages** (available to all users):
-Add to `hosts/common/common-packages.nix`
-
-**User packages** (home-manager):
-Add to `home/adi.nix` in the home-manager configuration
-
-**GUI applications**:
-Add to `hosts/common/darwin-common.nix` in the homebrew section
-
-### Adding New Hosts
-
-1. Create a new directory under `hosts/darwin/your-hostname/`
-2. Add a `default.nix` with host-specific configuration
-3. Add the host to `flake.nix` in `darwinConfigurations`
-
-### Shell Aliases
-
-Edit the `shellAliases` section in `home/adi.nix`:
+### 📦 Flake Structure
 
 ```nix
-programs.fish = {
-  shellAliases = {
-    # Your custom aliases here
-    myalias = "my command";
+inputs = {
+  nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  nix-darwin.url = "github:LnL7/nix-darwin/master";
+  home-manager.url = "github:nix-community/home-manager/master";
+  mac-app-util.url = "github:hraban/mac-app-util";
+};
+
+outputs = { ... }: {
+  darwinConfigurations."Adis-MacBook-Air" = lib.mkDarwin {
+    hostname = "Adis-MacBook-Air";
+    username = "adi";
+    system = "aarch64-darwin";
   };
 };
 ```
 
-## 🔄 Backup and Recovery
+### 🧩 Module System
 
-### Creating Backups
-```bash
-just backup  # Creates timestamped backup in home directory
+```
+├── 🛠️  lib/helpers.nix       → mkDarwin() system builder
+├── 📦 modules/               → Composable components
+│   ├── darwin/              → 🖥️  System-level (fonts, homebrew, nix, system)
+│   └── home-manager/        → 🏠 User-level (packages, programs, dotfiles)
+├── 💻 hosts/                → Machine-specific overrides
+└── ⚙️  home/                → Dotfiles and user configurations
 ```
 
-### Recovery
-If something breaks:
-```bash
-just rollback  # Rollback to previous generation
+## 🔧 Design Principles
+
+### **🧩 Modular Composition**
+Each module handles one concern:
+- `modules/darwin/nix.nix` → Nix daemon configuration
+- `modules/darwin/system.nix` → macOS system defaults
+- `modules/home-manager/packages.nix` → User package definitions
+
+### **🔄 Layered Configuration**
+Configuration flows in layers with clear override hierarchy:
+```
+Common Base → Darwin Modules → Host Specific → User Config
 ```
 
-## 📚 Learning Resources
-
-- [Nix Darwin Documentation](https://github.com/LnL7/nix-darwin)
-- [Home Manager Options](https://nix-community.github.io/home-manager/options.html)
-- [Nixpkgs Manual](https://nixos.org/manual/nixpkgs/stable/)
-- [Nix Language Guide](https://nix.dev/manual/nix/2.18/language/index.html)
-
-## 🚨 Troubleshooting
-
-### Common Issues
-
-**Build fails after macOS update:**
-```bash
-just update
-just switch
+### **⚡ Single Entry Point**
+Everything flows through `lib/helpers.nix::mkDarwin()`:
+```nix
+mkDarwin = { hostname, username, system }: 
+  nix-darwin.lib.darwinSystem {
+    modules = [
+      # Inline system configuration
+      # Host-specific overrides  
+      # Home Manager integration
+    ];
+  };
 ```
 
-**Homebrew conflicts:**
+### **🎯 Inline vs External Modules**
+**Inline Configuration**: Core system settings embedded directly in `helpers.nix` to avoid Nix store path issues
+
+**External Modules**: Host-specific and user customizations in separate files for maintainability
+
+## 📁 Directory Design
+
+### **`lib/` - Builder Functions**
+- `helpers.nix` → Core system builder with inline configuration
+- `default.nix` → Library exports and utilities
+
+### **`modules/` - Reusable Components**
+- **darwin/** → System-level modules (fonts, homebrew, etc.)
+- **home-manager/** → User environment modules (packages, programs)
+
+### **`hosts/` - Machine Configurations**
+- **common/** → Shared host settings
+- **darwin/Adis-MacBook-Air/** → This machine's specific tweaks
+
+### **`home/` - User Environment**
+- **users/adi.nix** → User-specific settings
+- **[app-dirs]/** → Application dotfiles and configs
+
+## ⚡ Quick Commands
+
 ```bash
-brew uninstall --cask <conflicting-app>
-just switch
+# Core workflow
+just switch    # Apply configuration changes
+just build     # Test build without applying
+just check     # Validate flake syntax
+just update    # Update all inputs
+
+# Maintenance  
+just cleanup   # Clean old generations
+just diff      # Show what would change
+just rollback  # Revert to previous generation
+
+# Development
+just fmt       # Format all .nix files
+just dev       # Enter development shell
 ```
 
-**Permission issues:**
-```bash
-sudo chown -R $(whoami) /etc/nix-darwin
+## 🔄 Configuration Flow
+
+```
+1. flake.nix → Entry point, defines inputs/outputs
+2. lib/helpers.nix → mkDarwin() builds complete system
+3. Inline config → Core system settings (users, nix, fonts, etc.)
+4. hosts/darwin/Adis-MacBook-Air/ → Machine-specific overrides
+5. Home Manager → User environment with dotfile management
 ```
 
-### Getting Help
+## 🎯 Customization Points
 
-1. Check the build output for specific errors
-2. Use `just doctor` to diagnose common issues
-3. Search [Nix Darwin Issues](https://github.com/LnL7/nix-darwin/issues)
-4. Ask on [NixOS Discourse](https://discourse.nixos.org/)
+| **What** | **Where** | **Why** |
+|----------|-----------|---------|
+| Add packages | `modules/home-manager/packages.nix` | User-level packages |
+| System tweaks | `hosts/darwin/Adis-MacBook-Air/` | Machine-specific |
+| Dotfiles | `home/[app]/` | Application configurations |
+| Core system | `lib/helpers.nix` | Fundamental system settings |
 
-## 📝 TODO
+## 🧪 Testing Strategy
 
-- [ ] Add secrets management with sops-nix
-- [ ] Set up automatic system updates
-- [ ] Add more development environments
-- [ ] Create dotfiles for additional tools
-- [ ] Add system monitoring and logging
+```bash
+# Always test before applying
+just build     # Verify configuration builds
+just check     # Validate flake structure
+just switch    # Apply if tests pass
+```
 
-## 🤝 Contributing
+## 🔮 Extensibility
 
-This is a personal configuration, but feel free to:
-- Use it as inspiration for your own setup
-- Suggest improvements via issues
-- Share your own configurations
+This flake design supports:
+- **Multiple machines** → Add to `hosts/darwin/`
+- **Multiple users** → Add to `home/users/`
+- **Cross-platform** → Add `hosts/nixos/` for Linux
+- **Custom overlays** → Extend `lib/default.nix`
 
-## 📄 License
+---
 
-This configuration is provided as-is under the MIT license. Use at your own risk.
+*Architecture focused on **composability**, **maintainability**, and **reproducibility***

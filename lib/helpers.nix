@@ -1,32 +1,257 @@
 { inputs, outputs, stateVersion, ... }:
+let
+  inherit (inputs.nixpkgs) lib;
+in
 {
+  # Create a Darwin system configuration
   mkDarwin = { hostname, username ? "adi", system ? "aarch64-darwin" }:
   let
-    inherit (inputs.nixpkgs) lib;
     unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
-    customConfPath = ./../hosts/darwin/${hostname};
-    customConf = if builtins.pathExists (customConfPath) then (customConfPath + "/default.nix") else ./../hosts/common/darwin-common.nix;
+    hostConfigPath = ./../hosts/darwin/${hostname};
+    hostConfig = if builtins.pathExists hostConfigPath 
+                 then hostConfigPath 
+                 else { };
   in
     inputs.nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit system inputs outputs hostname username unstablePkgs; };
+      inherit system;
+      
+      specialArgs = { 
+        inherit inputs outputs hostname username unstablePkgs stateVersion; 
+      };
+      
       modules = [
-        ../hosts/common/common-packages.nix
-        ../hosts/common/darwin-common.nix
-        customConf
+        # Inline the essential Darwin configuration to avoid path issues
         {
-          nixpkgs.overlays = [
-            # Add any overlays here if needed
+          # Primary user configuration
+          system.primaryUser = username;
+          
+          # User configuration
+          users.users.${username} = {
+            home = "/Users/${username}";
+            shell = "/run/current-system/sw/bin/fish";
+          };
+          
+          # Set hostname
+          networking.hostName = hostname;
+          networking.computerName = hostname;
+          networking.localHostName = hostname;
+          
+          # Nix configuration
+          nix = {
+            settings = {
+              experimental-features = [ "nix-command" "flakes" ];
+              warn-dirty = false;
+              trusted-users = [ "@admin" ];
+            };
+            
+            optimise.automatic = true;
+            channel.enable = false;
+            
+            gc = {
+              automatic = true;
+              interval = { Hour = 3; Minute = 15; };
+              options = "--delete-older-than 7d";
+            };
+          };
+          
+          # Allow unfree packages globally
+          nixpkgs.config.allowUnfree = true;
+          
+          # System state version
+          system.stateVersion = 5;
+          
+          # Shell configuration
+          programs.fish.enable = true;
+          programs.zsh.enable = true;
+          
+          # Font configuration
+          fonts.packages = with unstablePkgs; [
+            nerd-fonts.fira-code
+            nerd-fonts.jetbrains-mono
+            nerd-fonts.hack
+            nerd-fonts.iosevka
+          ];
+          
+          # Default macOS system settings
+          system.defaults = {
+            dock = {
+              autohide = true;
+              orientation = "bottom";
+              showhidden = true;
+              mineffect = "genie";
+              launchanim = true;
+              show-process-indicators = true;
+              tilesize = 48;
+              static-only = true;
+            };
+            
+            finder = {
+              AppleShowAllExtensions = true;
+              FXEnableExtensionChangeWarning = false;
+              CreateDesktop = false;
+              ShowPathbar = true;
+              ShowStatusBar = true;
+              FXPreferredViewStyle = "clmv";
+              FXDefaultSearchScope = "SCcf";
+            };
+            
+            trackpad = {
+              Clicking = true;
+              TrackpadThreeFingerDrag = true;
+            };
+            
+            NSGlobalDomain = {
+              AppleShowAllExtensions = true;
+              InitialKeyRepeat = 14;
+              KeyRepeat = 1;
+              
+              NSAutomaticCapitalizationEnabled = false;
+              NSAutomaticDashSubstitutionEnabled = false;
+              NSAutomaticPeriodSubstitutionEnabled = false;
+              NSAutomaticQuoteSubstitutionEnabled = false;
+              NSAutomaticSpellingCorrectionEnabled = false;
+            };
+            
+            loginwindow = {
+              GuestEnabled = false;
+              SHOWFULLNAME = false;
+            };
+          };
+          
+          # Homebrew configuration
+          homebrew = {
+            enable = true;
+            onActivation = {
+              cleanup = "zap";
+              autoUpdate = true;
+              upgrade = true;
+            };
+            
+            taps = [
+              "homebrew/cask-fonts"
+              "homebrew/services"
+            ];
+            
+            brews = [
+              "mas"
+            ];
+            
+            casks = [ ];
+            masApps = { };
+          };
+          
+          # System-level packages
+          environment.systemPackages = with unstablePkgs; [
+            curl
+            wget
+            git
+            kitty
+            iina
+            zathura
           ];
         }
+        
+        # Host-specific configuration
+        hostConfig
+        
+        # Home Manager integration
         inputs.home-manager.darwinModules.home-manager {
-          networking.hostName = hostname;
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "backup";
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.${username} = { imports = [ ./../home/${username}.nix ]; };
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            backupFileExtension = "backup";
+            extraSpecialArgs = { inherit inputs outputs unstablePkgs; };
+            
+            users.${username} = {
+              home.stateVersion = stateVersion;
+              
+              # User packages
+              home.packages = with unstablePkgs; [
+                fd
+                ripgrep
+                dust
+                duf
+                btop
+                tree
+                jq
+                yq
+                unzip
+                p7zip
+                gh
+              ];
+              
+              # Program configurations
+              programs = {
+                git = {
+                  enable = true;
+                  userName = "Adi";
+                  userEmail = "your-email@example.com";
+                };
+                
+                fish.enable = true;
+                starship.enable = true;
+                helix.enable = true;
+              };
+              
+              # Dotfiles
+              home.file = {
+                ".config/fish".source = ./../home/fish;
+                ".config/helix".source = ./../home/helix;
+                ".config/kitty".source = ./../home/kitty;
+                ".config/zathura".source = ./../home/zathura;
+                ".config/aerospace".source = ./../home/aerospace;
+                ".config/scdl/scdl.cfg".source = ./../home/scdl/scdl.cfg;
+                ".ssh/config".source = ./../home/ssh/config;
+                ".hushlogin".text = "";
+              };
+              
+              # User-specific environment variables
+              home.sessionVariables = {
+                EDITOR = "hx";
+                BROWSER = "zen";
+              };
+            };
+          };
         }
+        
+        # Mac App Util for better app integration
         inputs.mac-app-util.darwinModules.default
+        
+        # Global nixpkgs config
+        {
+          nixpkgs = {
+            hostPlatform = lib.mkDefault system;
+            overlays = [ outputs.overlays.default or (final: prev: { }) ];
+          };
+        }
+      ];
+    };
+
+  # Create a standalone Home Manager configuration (for non-NixOS systems)
+  mkHome = { username, system ? "aarch64-darwin" }:
+    inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = inputs.nixpkgs.legacyPackages.${system};
+      
+      extraSpecialArgs = { 
+        inherit inputs outputs;
+        unstablePkgs = inputs.nixpkgs-unstable.legacyPackages.${system};
+      };
+      
+      modules = [
+        {
+          home = {
+            inherit username;
+            homeDirectory = "/Users/${username}";
+            stateVersion = stateVersion;
+          };
+          
+          # Basic packages and programs would go here
+          home.packages = with inputs.nixpkgs.legacyPackages.${system}; [
+            fd
+            ripgrep
+            btop
+          ];
+        }
       ];
     };
 }

@@ -1,46 +1,38 @@
-# Justfile for nix-darwin management
-# Usage: just <command>
+# 🍎 Adi's Nix Darwin - Task Runner
 
-# Default recipe to display help
+# Show available commands
 default:
     @just --list
 
-# Build and switch the system configuration
+# 🚀 Daily Commands
+
+# Apply configuration changes
 switch:
-    darwin-rebuild switch --flake /etc/nix-darwin
+    darwin-rebuild switch --flake .#Adis-MacBook-Air
 
-# Build without switching
+# Build without applying (test first!)
 build:
-    darwin-rebuild build --flake /etc/nix-darwin
+    darwin-rebuild build --flake .#Adis-MacBook-Air
 
-# Check the configuration for syntax errors
+# Validate configuration
 check:
-    darwin-rebuild check --flake /etc/nix-darwin
+    nix flake check
 
-# Update flake inputs
+# Update dependencies
 update:
-    nix flake update /etc/nix-darwin
+    nix flake update
 
-# Update a specific input
-update-input input:
-    nix flake lock --update-input {{input}} /etc/nix-darwin
+# 🧹 Maintenance
 
-# Garbage collect old generations
-gc:
+# Clean old generations and optimize store
+cleanup:
     sudo nix-collect-garbage -d
-    sudo nix-store --optimize
+    nix-collect-garbage -d
+    nix store optimise
 
-# Show system generations
-generations:
-    sudo nix-env -p /nix/var/nix/profiles/system --list-generations
-
-# Delete old generations (keep last 3)
-clean-generations:
-    sudo nix-env -p /nix/var/nix/profiles/system --delete-generations +3
-
-# Show what would be updated
+# Show what would change
 diff:
-    darwin-rebuild build --flake /etc/nix-darwin
+    darwin-rebuild build --flake .#Adis-MacBook-Air
     nvd diff /run/current-system ./result
 
 # Rollback to previous generation
@@ -48,13 +40,37 @@ rollback:
     sudo nix-env -p /nix/var/nix/profiles/system --rollback
     sudo /nix/var/nix/profiles/system/activate
 
-# Show flake info
-info:
-    nix flake show /etc/nix-darwin
+# Format nix files
+fmt:
+    nixpkgs-fmt **/*.nix
 
-# Check for issues
+# Backup current configuration
+backup:
+    cp -r /etc/nix-darwin ~/nix-darwin-backup-$(date +%Y%m%d-%H%M%S)
+    @echo "✅ Backup created: ~/nix-darwin-backup-$(date +%Y%m%d-%H%M%S)"
+
+# 📊 Information
+
+# Show system info
+info:
+    @echo "🖥️  System: $(hostname) ($(uname -m))"
+    @echo "🍎 macOS: $(sw_vers -productVersion)"
+    @echo "❄️  Nix: $(nix --version | head -1)"
+    @echo "📦 Flake: $(nix flake metadata --json | jq -r .lastModified | xargs -I {} date -r {})"
+
+# Show flake metadata
+meta:
+    nix flake metadata
+
+# Check for system issues
 doctor:
     nix-doctor
+
+# 🛠️ Development
+
+# Enter development shell
+dev:
+    nix develop
 
 # Search for packages
 search package:
@@ -63,12 +79,3 @@ search package:
 # Install a package temporarily
 shell package:
     nix shell nixpkgs#{{package}}
-
-# Format nix files
-fmt:
-    find /etc/nix-darwin -name "*.nix" -exec nixpkgs-fmt {} \;
-
-# Backup current configuration
-backup:
-    cp -r /etc/nix-darwin ~/nix-darwin-backup-$(date +%Y%m%d-%H%M%S)
-    echo "Backup created in ~/nix-darwin-backup-$(date +%Y%m%d-%H%M%S)"
