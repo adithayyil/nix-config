@@ -2,13 +2,11 @@
 {
   home.stateVersion = "23.11";
 
+  # Enable mac-app-util for proper GUI app linking
+  programs.mac-app-util.enable = true;
+
   # Home packages
   home.packages = with pkgs; [
-    kitty
-    iina
-    
-    zathura
-
     # Fonts
     nerd-fonts.fira-code
     
@@ -17,6 +15,11 @@
     dust
     duf
     btop
+    
+    # GUI Applications (will be linked to /Applications by mac-app-util)
+    kitty
+    iina
+    zathura
   ];
 
   # Use real config files/folders from home directory

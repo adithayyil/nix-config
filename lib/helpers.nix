@@ -24,7 +24,12 @@
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
           home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.${username} = { imports = [ ./../home/${username}.nix ]; };
+          home-manager.users.${username} = { 
+            imports = [ 
+              ./../home/${username}.nix 
+              inputs.mac-app-util.homeManagerModules.default
+            ]; 
+          };
         }
         inputs.mac-app-util.darwinModules.default
       ];
