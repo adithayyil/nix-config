@@ -1,4 +1,4 @@
-# adi's `nix-darwin` flake
+# adi's nix-darwin flake
 
 > *Clean, modular macOS system configuration using nix-darwin + home-manager*
 
