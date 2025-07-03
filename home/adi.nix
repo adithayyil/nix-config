@@ -4,11 +4,11 @@
 
   # Home packages
   home.packages = with pkgs; [
-    # GUI Applications
     kitty
     iina
-    zathura
     
+    zathura
+
     # Fonts
     nerd-fonts.fira-code
     

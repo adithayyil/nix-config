@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   system.primaryUser = "adi";
 
@@ -9,7 +9,7 @@
     persistent-apps = [
       "/Applications/Safari.app"
       "/Applications/Visual Studio Code.app"
-      "/System/Applications/Terminal.app"
+      "/System/Applications/kitty.app"
       "/Applications/Finder.app"
     ];
   };

@@ -8,7 +8,7 @@
     customConf = if builtins.pathExists (customConfPath) then (customConfPath + "/default.nix") else ./../hosts/common/darwin-common.nix;
   in
     inputs.nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit system inputs username unstablePkgs; };
+      specialArgs = { inherit system inputs outputs hostname username unstablePkgs; };
       modules = [
         ../hosts/common/common-packages.nix
         ../hosts/common/darwin-common.nix

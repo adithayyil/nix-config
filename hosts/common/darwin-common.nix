@@ -87,32 +87,32 @@ in
     ];
     
     casks = [
-    #   # Browsers
-    #   "firefox"
-    #   "google-chrome"
+      #   # Browsers
+      #   "firefox"
+      #   "google-chrome"
       
-    #   # Development
-    #   "visual-studio-code"
-    #   "iterm2"
-    #   "docker"
+      #   # Development
+      #   "visual-studio-code"
+      #   "iterm2"
+      #   "docker"
       
-    #   # Productivity
-    #   "notion"
+      #   # Productivity
+      #   "notion"
       
-    #   # Media
-    #   "vlc"
-    #   "spotify"
+      #   # Media
+      #   "vlc"
+      #   "spotify"
       
-    #   # Communication
-    #   "discord"
+      #   # Communication
+      #   "discord"
       
-    #   # Utilities
-    #   "the-unarchiver"
-    #   "appcleaner"
+      #   # Utilities
+      #   "the-unarchiver"
+      #   "appcleaner"
     ];
     
     masApps = {
-      "Xcode" = 497799835;
+    #   "Xcode" = 497799835;
     };
   };
 }
