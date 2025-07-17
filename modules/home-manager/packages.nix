@@ -19,9 +19,15 @@
 
     # Language Servers
     nixd
+    tinymist    
+    
+    # Programming languages
+    nodejs_20
+    go
 
     # File utilities
     zathura
+    ffmpeg_6-full
     # unzip
     # p7zip
 
@@ -36,7 +42,12 @@
     kitty
     aerospace
     iina
+    vesktop
 
+
+    # utils
+    tmux
     scdl
+    yt-dlp
   ];
 }

@@ -10,12 +10,14 @@
     };
 
     taps = [
-      "homebrew/cask-fonts"
-      "homebrew/services"
+      # Note: homebrew/cask-fonts and homebrew/services have been deprecated
+      # Font casks are now available directly without the tap
+      # Services functionality has been integrated into Homebrew core
     ];
 
     brews = [
       "mas" # Mac App Store CLI
+      "blackhole-2ch" # Audio routing
     ];
 
     # Common casks that work well across machines
