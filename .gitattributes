@@ -1,0 +1,4 @@
+*.nix linguist-detectable=true
+# *.sh linguist-detectable=false
+justfile linguist-language=Nix
+
