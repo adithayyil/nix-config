@@ -1,37 +1,34 @@
 { pkgs, unstablePkgs, ... }:
+
 {
-  # User packages
   home.packages = with unstablePkgs; [
-    # Development tools
-    helix
-    just
-    tree
-    nodejs_20
+    # ─── Core Development ──────────────────────────────────────────
+    git 
     go
+    nodejs_20
+    just
 
-    # Language Servers
+    # ─── Editors & Language Support ───────────────────────────────
+    helix
     nixd
-    tinymist    
+    tinymist
 
-    # File utilities
-    zathura
+    # ─── Media & Content Tools ────────────────────────────────────
     ffmpeg_6-full
-
-    # Version control
-    git
-
-    # GUI Applications
-    kitty
-    aerospace
-    iina
-    vesktop
-
-    # Utils
-    tmux
     scdl
     yt-dlp
+    iina
+
+    # ─── Terminal Environment ─────────────────────────────────────
+    kitty
+    tmux
+
+    # ─── Desktop & Productivity ───────────────────────────────────
+    aerospace
+    vesktop
+    zathura
   ];
 
-  # Enable fontconfig for home-manager
+  # ─── Font Configuration ───────────────────────────────────────────
   fonts.fontconfig.enable = true;
 }
