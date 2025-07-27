@@ -1,6 +1,6 @@
 { ... }:
 {
-  # Dotfile management - link configuration files from the repository
+  # Dotfile management
   home.file = {
     ".config/fish".source = ../../home/fish;
     ".config/helix".source = ../../home/helix;
@@ -9,7 +9,7 @@
     ".config/aerospace".source = ../../home/aerospace;
     ".tmux".source = ../../home/tmux;
     ".tmux.conf".source = ../../home/tmux/tmux.conf;
-   ".config/scdl/scdl.cfg".source = ../../home/scdl/scdl.cfg;
+    ".config/scdl/scdl.cfg".source = ../../home/scdl/scdl.cfg;
     ".ssh/config".source = ../../home/ssh/config;
     ".hushlogin".text = "";
   };

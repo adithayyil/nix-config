@@ -17,13 +17,10 @@
 
     brews = [
       "mas" # Mac App Store CLI
-      "blackhole-2ch" # Audio routing
     ];
 
     # Common casks that work well across machines
     casks = [
-      # Development tools that aren't in nixpkgs or work better via Homebrew
-      # Add machine-specific casks in host configs
     ];
 
     masApps = {

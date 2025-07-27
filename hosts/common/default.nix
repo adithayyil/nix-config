@@ -12,6 +12,4 @@
   networking.computerName = hostname;
   networking.localHostName = hostname;
 
-  # Enable TouchID for sudo
-  security.pam.enableSudoTouchId = true;
 }

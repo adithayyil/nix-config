@@ -21,7 +21,7 @@ in
       };
 
       modules = [
-        # Inline the essential Darwin configuration to avoid path issues
+        # Inline the essential Darwin configuration
         {
           # Primary user configuration
           system.primaryUser = username;
@@ -65,7 +65,7 @@ in
           programs.fish.enable = true;
           programs.zsh.enable = true;
 
-          # Font configuration
+          # Font configuration (system level)
           fonts.packages = with unstablePkgs; [
             nerd-fonts.fira-code
             nerd-fonts.jetbrains-mono
@@ -119,34 +119,14 @@ in
             };
           };
 
-          # Homebrew configuration
-          homebrew = {
-            enable = true;
-            onActivation = {
-              cleanup = "zap";
-              autoUpdate = true;
-              upgrade = true;
-            };
-
-            taps = [
-              # Note: homebrew/cask-fonts and homebrew/services have been deprecated
-              # Font casks are now available directly without the tap
-              # Services functionality has been integrated into Homebrew core
-            ];
-
-            brews = [
-              "mas"
-            ];
-
-            casks = [ ];
-            masApps = { };
-          };
-
-          # System-level packages (minimal - most packages should be in home-manager)
+          # System-level packages (minimal)
           environment.systemPackages = with unstablePkgs; [
             # Only essential system-wide tools here
           ];
         }
+
+        # Import system-level modules here
+        ./../modules/darwin/homebrew.nix
 
         # Host-specific configuration
         hostConfig
@@ -158,34 +138,28 @@ in
             useGlobalPkgs = true;
             useUserPackages = true;
             backupFileExtension = "backup";
-            extraSpecialArgs = { inherit inputs outputs unstablePkgs; };
-
-            users.${username} = {
-              home.stateVersion = stateVersion;
-
-              # Import modular home-manager configuration
-              imports = [
-                ./../modules/home-manager
-                inputs.mac-app-util.homeManagerModules.default
-              ];
+            
+            # ADD THIS: Pass extraSpecialArgs to home-manager
+            extraSpecialArgs = {
+              inherit inputs outputs unstablePkgs;
             };
-          };
-        }
-
-        # Mac App Util for better app integration
-        inputs.mac-app-util.darwinModules.default
-
-        # Global nixpkgs config
-        {
-          nixpkgs = {
-            hostPlatform = lib.mkDefault system;
-            overlays = [ outputs.overlays.default or (final: prev: { }) ];
+            
+            # Import the home-manager modules
+            users.${username} = {
+              imports = [ ./../modules/home-manager/default.nix ];
+              
+              # Set required home-manager options
+              home = {
+                inherit username stateVersion;
+                homeDirectory = "/Users/${username}";
+              };
+            };
           };
         }
       ];
     };
 
-  # Create a standalone Home Manager configuration (for non-NixOS systems)
+  # Create a standalone Home Manager configuration
   mkHome = { username, system ? "aarch64-darwin" }:
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${system};
@@ -198,18 +172,11 @@ in
       modules = [
         {
           home = {
-            inherit username;
+            inherit username stateVersion;
             homeDirectory = "/Users/${username}";
-            stateVersion = stateVersion;
           };
-
-          # Basic packages and programs would go here
-          home.packages = with inputs.nixpkgs.legacyPackages.${system}; [
-            fd
-            ripgrep
-            btop
-          ];
         }
+        ./../modules/home-manager/default.nix
       ];
     };
 }

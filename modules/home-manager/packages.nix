@@ -1,53 +1,37 @@
 { pkgs, unstablePkgs, ... }:
 {
-  # User packages - tools and applications for development and daily use
+  # User packages
   home.packages = with unstablePkgs; [
     # Development tools
     helix
     just
-    # htop
-    # fd
-    # ripgrep
-    # dust
-    # duf
-    # btop
     tree
-    # jq
-    # yq
-    # gh
-
+    nodejs_20
+    go
 
     # Language Servers
     nixd
     tinymist    
-    
-    # Programming languages
-    nodejs_20
-    go
 
     # File utilities
     zathura
     ffmpeg_6-full
-    # unzip
-    # p7zip
-
-    # Network tools
-    # curl
-    # wget
 
     # Version control
     git
 
-    # GUI Applications (these will be linked to /Applications/Nix Apps)
+    # GUI Applications
     kitty
     aerospace
     iina
     vesktop
 
-
-    # utils
+    # Utils
     tmux
     scdl
     yt-dlp
   ];
+
+  # Enable fontconfig for home-manager
+  fonts.fontconfig.enable = true;
 }
