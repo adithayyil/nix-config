@@ -1,31 +1,8 @@
-# Nix build outputs
+# Nix
 result
 result-*
+.direnv/
+.devenv/
 
 # macOS
 .DS_Store
-.AppleDouble
-.LSOverride
-
-# Backups
-*.backup
-*.bak
-
-# Secrets (if you add them later)
-secrets/
-.sops.yaml
-
-# Temporary files
-.tmp/
-*.tmp
-
-# Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Local configuration overrides
-local.nix
-personal.nix

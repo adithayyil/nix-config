@@ -1,0 +1,4 @@
+*.nix linguist-language=Nix
+*.sh linguist-language=Shell
+result linguist-vendored
+.direnv/ linguist-vendored
