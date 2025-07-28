@@ -1,9 +1,11 @@
 [env]
 TERM = "xterm-256color"
+[font]
+size = 28
 
 [window.padding]
 x = 0
 y = 0
 
-
-general.import = ["themes/catppuccin-latte.toml"]
+[general]
+import = [ "theme/catppuccin-latte.toml" ]
