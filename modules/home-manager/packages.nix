@@ -20,7 +20,6 @@
     iina
 
     # ─── Terminal Environment ─────────────────────────────────────
-    kitty
     alacritty
     tmux
 

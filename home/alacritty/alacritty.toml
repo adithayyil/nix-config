@@ -4,9 +4,17 @@ TERM = "xterm-256color"
 [font]
 size = 28
 
+[font.normal]
+family = "FiraCode Nerd Font Mono"
+style = "Regular"
+
 [window.padding]
-x = 0
+x = 6
 y = 0
 
+[window]
+decorations = "none"
+dynamic_padding = true
+
 [general]
-import = [ "~/.config/alacritty/theme/catppuccin-latte.toml" ]
+import = [ "~/.config/alacritty/themes/catppuccin-latte.toml" ]
