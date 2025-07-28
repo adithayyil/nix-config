@@ -21,6 +21,7 @@
 
     # ─── Terminal Environment ─────────────────────────────────────
     kitty
+    ghostty
     tmux
 
     # ─── Desktop & Productivity ───────────────────────────────────

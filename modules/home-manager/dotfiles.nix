@@ -7,9 +7,7 @@
     ".config/kitty".source = ../../home/kitty;
     ".config/zathura".source = ../../home/zathura;
     ".config/aerospace".source = ../../home/aerospace;
-    ".tmux".source = ../../home/tmux;
     ".tmux.conf".source = ../../home/tmux/tmux.conf;
-    ".config/scdl/scdl.cfg".source = ../../home/scdl/scdl.cfg;
     ".ssh/config".source = ../../home/ssh/config;
     ".hushlogin".text = "";
   };
