@@ -21,10 +21,12 @@ in
       };
 
       modules = [
+        inputs.mac-app-util.darwinModules.default
+
         # Inline the essential Darwin configuration
         {
           # Primary user configuration
-          system.primaryUser = username;
+          system.primaryUser = "adi";
 
           # User configuration
           users.users.${username} = {
@@ -146,7 +148,10 @@ in
             
             # Import the home-manager modules
             users.${username} = {
-              imports = [ ./../modules/home-manager/default.nix ];
+              imports = [ 
+                ./../modules/home-manager/default.nix
+                inputs.mac-app-util.homeManagerModules.default  # Add this line
+              ];
               
               # Set required home-manager options
               home = {

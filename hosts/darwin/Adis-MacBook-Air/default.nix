@@ -5,11 +5,6 @@
   # Custom dock configuration for this machine
   system.defaults.dock = {
     persistent-apps = [
-      "/Applications/Zen.app"
-      "/Applications/Visual Studio Code.app"
-      "/Applications/Nix Trampolines/kitty.app"
-      "/Applications/Spotify.app"
-      "/Applications/Finder.app"
     ];
   };
 
