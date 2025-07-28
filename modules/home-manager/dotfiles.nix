@@ -5,6 +5,7 @@
     ".config/fish".source = ../../home/fish;
     ".config/helix".source = ../../home/helix;
     ".config/kitty".source = ../../home/kitty;
+    ".config/alacritty".source = ../../home/alacritty;
     ".config/zathura".source = ../../home/zathura;
     ".config/aerospace".source = ../../home/aerospace;
     ".tmux.conf".source = ../../home/tmux/tmux.conf;
